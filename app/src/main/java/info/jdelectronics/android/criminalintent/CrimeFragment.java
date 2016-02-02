@@ -13,6 +13,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by daniel on 2/1/16.
  */
@@ -57,7 +63,12 @@ public class CrimeFragment extends Fragment{
         // Date Button Wire-up
 
         mDateButton = (Button) v.findViewById(R.id.crime_date_button);
-        mDateButton.setText(mCrime.getDate().toString());
+        Date currentDate = mCrime.getDate();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM:dd:yyyy h:mm:aa ");
+        StringBuffer dateString = new StringBuffer();
+        dateFormat.format(currentDate,dateString,new FieldPosition(DateFormat.DEFAULT));
+
+        mDateButton.setText(dateString);
         mDateButton.setEnabled(false);
 
 
