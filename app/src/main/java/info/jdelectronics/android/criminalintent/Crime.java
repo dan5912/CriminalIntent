@@ -1,5 +1,8 @@
 package info.jdelectronics.android.criminalintent;
 
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -12,6 +15,8 @@ public class Crime {
     private String mTitle;
     private Date mDate;
     private boolean mSolved;
+
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, MM:dd:yyyy h:mm:aa ");
 
     public Crime() {
         mId = UUID.randomUUID();
@@ -32,6 +37,12 @@ public class Crime {
 
     public Date getDate() {
         return mDate;
+    }
+
+    public StringBuffer getDateString() {
+        StringBuffer dateString = new StringBuffer();
+        DATE_FORMAT.format(mDate,dateString,new FieldPosition(DateFormat.DEFAULT));
+        return dateString;
     }
 
     public void setDate(Date date) {

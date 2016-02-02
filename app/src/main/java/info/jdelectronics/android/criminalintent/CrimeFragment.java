@@ -63,12 +63,7 @@ public class CrimeFragment extends Fragment{
         // Date Button Wire-up
 
         mDateButton = (Button) v.findViewById(R.id.crime_date_button);
-        Date currentDate = mCrime.getDate();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MM:dd:yyyy h:mm:aa ");
-        StringBuffer dateString = new StringBuffer();
-        dateFormat.format(currentDate,dateString,new FieldPosition(DateFormat.DEFAULT));
-
-        mDateButton.setText(dateString);
+        mDateButton.setText(mCrime.getDateString());
         mDateButton.setEnabled(false);
 
 
