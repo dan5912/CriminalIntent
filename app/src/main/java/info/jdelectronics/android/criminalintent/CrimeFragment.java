@@ -1,6 +1,8 @@
 package info.jdelectronics.android.criminalintent;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -28,6 +30,10 @@ public class CrimeFragment extends Fragment{
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
+    private int mCrimeListId;
+    private Button mSaveButton;
+
+    public static final String EXTRA_CRIMES_INDEX_CHANGED = "info.jdelectronics.android.criminal-intent.crimes_index_changed";
 
     public static final String ARG_CRIME_ID = "crime_id";
 
@@ -39,11 +45,15 @@ public class CrimeFragment extends Fragment{
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID crimeID = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
-        mCrime = CrimeLab.get(getActivity()).getCrime(crimeID);
+        CrimeLab.crimeInfo crimeInfo = CrimeLab.get(getActivity()).getCrime(crimeID);
+        mCrime = crimeInfo.crime;
+        mCrimeListId = crimeInfo.crime_id;
+
     }
 
 
@@ -88,6 +98,20 @@ public class CrimeFragment extends Fragment{
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+            }
+        });
+
+        // Save Button Wire-up
+
+        mSaveButton = (Button) v.findViewById(R.id.save_crime_button);
+
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent data = new Intent();
+                data.putExtra(EXTRA_CRIMES_INDEX_CHANGED, mCrimeListId);
+                getActivity().setResult(Activity.RESULT_OK,data);
+                getActivity().finish();
             }
         });
 

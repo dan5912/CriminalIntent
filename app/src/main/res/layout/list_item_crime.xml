@@ -3,7 +3,8 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+    >
 
 
     <CheckBox
@@ -19,7 +20,8 @@
         android:id="@+id/list_item_crime_title_text_view"
         android:textStyle="bold"
         android:padding="4dp"
-        tools:text="Crime Title"/>
+        tools:text="Crime Title"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,4 +30,9 @@
         android:id="@+id/list_item_crime_date_text_view"
         android:padding="4dp"
         tools:text="Crime Date"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:background="#555"
+        android:layout_below="@id/list_item_crime_date_text_view"/>
 </RelativeLayout>

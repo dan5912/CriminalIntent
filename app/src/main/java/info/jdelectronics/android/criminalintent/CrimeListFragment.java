@@ -1,5 +1,6 @@
 package info.jdelectronics.android.criminalintent;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 
@@ -22,18 +24,13 @@ public class CrimeListFragment extends Fragment {
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
-
+    private static final int REQUEST_CRIME_LIST_ID = 0;
 
     private void updateUI(){
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
-        if (mAdapter == null) {
-            mAdapter = new CrimeAdapter(crimes);
-            mCrimeRecyclerView.setAdapter(mAdapter);
-        }
-        else {
-            mAdapter.notifyDataSetChanged();
-        }
+        mAdapter = new CrimeAdapter(crimes);
+        mCrimeRecyclerView.setAdapter(mAdapter);
 
     }
 
@@ -45,6 +42,8 @@ public class CrimeListFragment extends Fragment {
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
         return view;
+
+
 
     }
 
@@ -68,12 +67,21 @@ public class CrimeListFragment extends Fragment {
             mTitleTextView.setText(mCrime.getTitle());
             mDateTextView.setText(mCrime.getDateString());
             mSolvedCheckBox.setChecked(mCrime.isSolved());
+
+            mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mCrime.setSolved(isChecked);
+                }
+            });
         }
+
+
 
         @Override
         public void onClick(View v) {
             Intent intent = CrimeActivity.newIntent(getContext(),mCrime.getId());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CRIME_LIST_ID);
         }
 
     }
@@ -109,6 +117,18 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateUI();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_CRIME_LIST_ID) {
+            if (data == null) {
+                return;
+            }
+            mAdapter.notifyItemChanged(CrimeActivity.getCrimeIndexChanged(data));
+        }
     }
 }

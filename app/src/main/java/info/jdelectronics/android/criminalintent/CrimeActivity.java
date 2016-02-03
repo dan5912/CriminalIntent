@@ -13,6 +13,8 @@ public class CrimeActivity extends SingleFragmentActivity {
 
     private static final String EXTRA_CRIME_ID = "info.jdelectronics.android.criminal-intent.crime_id";
 
+
+
     public static Intent newIntent(Context context, UUID crimeId) {
         Intent intent = new Intent(context, CrimeActivity.class);
         intent.putExtra(EXTRA_CRIME_ID, crimeId);
@@ -24,5 +26,11 @@ public class CrimeActivity extends SingleFragmentActivity {
         UUID crimeID = (UUID)getIntent().getSerializableExtra(EXTRA_CRIME_ID);
         return CrimeFragment.newInstance(crimeID);
     }
+
+
+    public static int getCrimeIndexChanged(Intent data) {
+        return data.getIntExtra(CrimeFragment.EXTRA_CRIMES_INDEX_CHANGED,0);
+    }
+
 
 }
