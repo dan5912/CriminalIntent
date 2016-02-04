@@ -15,7 +15,7 @@ public class CrimeLab {
     public class crimeInfo {
         public Crime crime;
         public int crime_id;
-    };
+    }
 
     private List<Crime> mCrimes;
 
