@@ -14,7 +14,7 @@ public class CrimeLab {
 
     public class crimeInfo {
         public Crime crime;
-        public int crime_id;
+        public int crime_index;
     }
 
     private List<Crime> mCrimes;
@@ -47,7 +47,7 @@ public class CrimeLab {
             if (crime.getId().equals(id)) {
                 crimeInfo info = new crimeInfo();
                 info.crime = crime;
-                info.crime_id = i;
+                info.crime_index = i;
                 return info;
             }
         }

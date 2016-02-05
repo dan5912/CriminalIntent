@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -33,6 +34,8 @@ public class CrimeFragment extends Fragment{
     private int mCrimeListId;
     private Button mSaveButton;
 
+    private static final String DIALOG_DATE = "DialogDate";
+
     public static final String EXTRA_CRIMES_INDEX_CHANGED = "info.jdelectronics.android.criminal-intent.crimes_index_changed";
 
     public static final String ARG_CRIME_ID = "crime_id";
@@ -52,7 +55,7 @@ public class CrimeFragment extends Fragment{
         UUID crimeID = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         CrimeLab.crimeInfo crimeInfo = CrimeLab.get(getActivity()).getCrime(crimeID);
         mCrime = crimeInfo.crime;
-        mCrimeListId = crimeInfo.crime_id;
+        mCrimeListId = crimeInfo.crime_index;
 
     }
 
@@ -87,7 +90,14 @@ public class CrimeFragment extends Fragment{
 
         mDateButton = (Button) v.findViewById(R.id.crime_date_button);
         mDateButton.setText(mCrime.getDateString());
-        mDateButton.setEnabled(false);
+        mDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getFragmentManager();
+                DatePickerFragment dialog = new DatePickerFragment().newInstance(mCrime.getDate());
+                dialog.show(fragmentManager,DIALOG_DATE);
+            }
+        });
 
 
         // Check Box Wire-up
