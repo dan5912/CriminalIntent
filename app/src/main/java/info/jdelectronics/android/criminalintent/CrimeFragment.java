@@ -15,11 +15,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -39,6 +34,8 @@ public class CrimeFragment extends Fragment{
     public static final String EXTRA_CRIMES_INDEX_CHANGED = "info.jdelectronics.android.criminal-intent.crimes_index_changed";
 
     public static final String ARG_CRIME_ID = "crime_id";
+
+    private static final int REQUEST_DATE = 0;
 
     public static CrimeFragment newInstance(UUID crimeID) {
         Bundle args = new Bundle();
@@ -95,7 +92,9 @@ public class CrimeFragment extends Fragment{
             public void onClick(View v) {
                 FragmentManager fragmentManager = getFragmentManager();
                 DatePickerFragment dialog = new DatePickerFragment().newInstance(mCrime.getDate());
+                dialog.setTargetFragment(CrimeFragment.this,REQUEST_DATE);
                 dialog.show(fragmentManager,DIALOG_DATE);
+
             }
         });
 
@@ -118,14 +117,28 @@ public class CrimeFragment extends Fragment{
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent data = new Intent();
-                data.putExtra(EXTRA_CRIMES_INDEX_CHANGED, mCrimeListId);
-                getActivity().setResult(Activity.RESULT_OK,data);
                 getActivity().finish();
             }
         });
 
 
         return v;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_DATE) {
+            if (data == null) {
+                return;
+            }
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mCrime.setDate(date);
+            mDateButton.setText(mCrime.getDateString());
+
+        }
     }
 }
