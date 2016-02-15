@@ -47,9 +47,8 @@ public class CrimePagerActivity extends AppCompatActivity {
         });
 
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
+        mViewPager.setCurrentItem(getCrimeIndex(crimeId));
 
-        CrimeLab.crimeInfo crimeInfo = CrimeLab.get(this).getCrime(crimeId);
-        mViewPager.setCurrentItem(crimeInfo.crime_index);
     }
 
     public static Intent newIntent(Context packageContext, UUID crimeId) {
@@ -58,7 +57,13 @@ public class CrimePagerActivity extends AppCompatActivity {
         return intent;
     }
 
-    public static int getCrimeIndexChanged(Intent data) {
-        return data.getIntExtra(CrimeFragment.EXTRA_CRIMES_INDEX_CHANGED,0);
+    public int getCrimeIndex(UUID id) {
+        for (int i=0;i<mCrimes.size();i++) {
+            if (mCrimes.get(i).getId().equals(id)) {
+                return i;
+            }
+        }
+        return 0;
     }
+
 }
