@@ -17,12 +17,17 @@ import java.util.UUID;
  */
 
 
-public class CrimePagerActivity extends AppCompatActivity {
+public class CrimePagerActivity extends AppCompatActivity implements CrimeFragment.Callbacks {
 
     private ViewPager mViewPager;
     private List<Crime> mCrimes;
 
     private static final String EXTRA_CRIME_ID = "info.jdelectronics.android.criminal-intent.crime_id";
+
+    @Override
+    public void onCrimeUpdate(Crime crime, String caller) {
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

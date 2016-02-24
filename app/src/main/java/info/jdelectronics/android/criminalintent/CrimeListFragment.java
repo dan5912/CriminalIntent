@@ -1,7 +1,9 @@
 package info.jdelectronics.android.criminalintent;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,12 +36,20 @@ public class CrimeListFragment extends Fragment {
     private CrimeAdapter mAdapter;
     private ImageButton mDeleteButton;
     private LinearLayout mHintLayout;
-
-    private static final int REQUEST_CRIME_LIST_ID = 0;
-
+    private Callbacks mCallbacks;
 
 
-    private void updateUI(){
+
+    public static final String CALLBACK_ID = "CRIME_LIST_FRAGMENT";
+    public interface Callbacks{
+        void onCrimeSelected(Crime crime);
+        void onCrimeUpdate(Crime crime, String caller);
+        void onCrimeDelete();
+    }
+
+
+
+    public void updateUI(){
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
         if (mAdapter == null) {
@@ -101,8 +111,7 @@ public class CrimeListFragment extends Fragment {
             case R.id.menu_item_new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(),crime.getId());
-                startActivity(intent);
+                mCallbacks.onCrimeSelected(crime);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,7 +146,8 @@ public class CrimeListFragment extends Fragment {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     mCrime.setSolved(isChecked);
-                    CrimeLab.get(getContext()).updateCrime(mCrime);
+                    CrimeLab.get(getActivity()).updateCrime(mCrime);
+                    mCallbacks.onCrimeUpdate(mCrime, CALLBACK_ID);
                 }
             });
 
@@ -150,7 +160,7 @@ public class CrimeListFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             crimeLab.deleteCrime(mCrime);
-                            updateUI();
+                            mCallbacks.onCrimeDelete();
                         }
                     }).setNegativeButton(R.string.no, null).create();
                     dialog.show();
@@ -163,9 +173,7 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
-            //startActivityForResult(intent, REQUEST_CRIME_LIST_ID);
-            startActivityForResult(intent,REQUEST_CRIME_LIST_ID);
+            mCallbacks.onCrimeSelected(mCrime);
         }
 
     }
@@ -206,6 +214,18 @@ public class CrimeListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateUI();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
 

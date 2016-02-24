@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +46,7 @@ public class CrimeLab {
 
     public void deleteCrime(Crime c) {
         mDatabase.delete(CrimeTable.NAME, CrimeTable.Cols.UUID + " = ?", new String[]{c.getId().toString()});
+        getPhotoFile(c).delete();
     }
 
     public List<Crime> getCrimes() {
@@ -103,5 +106,14 @@ public class CrimeLab {
                 null,
                 null);
         return new CrimeCursorWrapper(cursor);
+    }
+
+    public File getPhotoFile(Crime crime) {
+        File externalFilesDirectory = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (externalFilesDirectory == null) {
+            return null;
+        }
+
+        return new File(externalFilesDirectory,crime.getPhotoFilename());
     }
 }
